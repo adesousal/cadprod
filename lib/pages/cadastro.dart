@@ -19,7 +19,6 @@ class _CadastroState extends State<Cadastro> {
   final TextEditingController _descricaoController = TextEditingController();
   List<String> imagensBase64 = [];
   bool editando = false;
-  int index = 0;
   String? codigoOriginal;
 
   @override
@@ -61,8 +60,7 @@ class _CadastroState extends State<Cadastro> {
   Future<void> salvarProduto() async {
     if (_formKey.currentState!.validate()) {
       // Cria o mapa do produto
-      Map<String, dynamic> produto = {
-        'id': 0,
+      Map<String, dynamic> produto = {        
         'codigo': _codigoController.text,
         'cor': _corController.text,
         'descricao': _descricaoController.text,
@@ -80,7 +78,7 @@ class _CadastroState extends State<Cadastro> {
           return;
         }
 
-        int index = produtos.indexWhere((p) => p['id'] == produto['id']);
+        int index = produtos.indexWhere((p) => p['codigo'] == codigoOriginal);
         produtos[index] = produto;
       } else {
         if (produtos.any((p) => p['codigo'] == produto['codigo'])) {
@@ -89,8 +87,7 @@ class _CadastroState extends State<Cadastro> {
           );
           return;
         }
-
-        produto['id'] = produtos.length;
+        
         produtos.add(produto);
       }
       await writeProdutos(produtos);
