@@ -131,6 +131,35 @@ class _CadastroState extends State<Cadastro> {
   );
 }
 
+void confirmarExclusao() {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text("Confirmar Exclusão"),
+      content: Text("Tem certeza que deseja excluir este produto?"),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text("Cancelar"),
+        ),
+        TextButton(
+          onPressed: () => excluirProduto(),
+          child: Text("Excluir", style: TextStyle(color: Colors.red)),
+        ),
+      ],
+    ),
+  );
+}
+
+Future<void> excluirProduto() async {
+  List<dynamic> produtos = await readProdutos();
+  produtos.removeWhere((p) => p['codigo'] == codigoOriginal);
+  await writeProdutos(produtos);
+
+  Navigator.of(context).pop(); // Fecha o diálogo
+  Navigator.of(context).pop(); // Volta para a tela anterior
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,6 +234,15 @@ class _CadastroState extends State<Cadastro> {
                 ElevatedButton(
                   onPressed: salvarProduto,
                   child: Text('Salvar Produto'),
+                ),
+                SizedBox(height: 20),
+                if (editando) 
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: confirmarExclusao,
+                    child: Text('Excluir Produto', style: TextStyle(color: Colors.white)),
+                  ),
                 ),
               ],
             ),
